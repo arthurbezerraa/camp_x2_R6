@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initKdBars();
   initTypeCards();
   initDuoSelectors();
+  initPlayerSelectors();
   initFormSubmit();
 });
 
@@ -150,6 +151,43 @@ function initDuoSelectors() {
     select.addEventListener('change', update);
     update();
   });
+}
+
+/* ── X1 player selectors (1v1 form) ───────────────────── */
+function initPlayerSelectors() {
+  const selects = document.querySelectorAll('[data-player-select]');
+  if (!selects.length) return;
+
+  const playersData = parseJsonScript('players-data') || {};
+  const prevStats   = parseJsonScript('prev-stats-data') || {};
+
+  selects.forEach(select => {
+    const team   = select.dataset.team;
+    const rowsEl = team ? document.getElementById(`team${team}-rows`) : null;
+    const nameEl = team ? document.getElementById(`team${team}-name`) : null;
+    const cardEl = team ? document.querySelector(`[data-team-card="${team}"]`) : null;
+
+    const update = () => {
+      const player = playersData[select.value];
+      if (player) {
+        if (nameEl) nameEl.textContent = player.nome;
+        if (cardEl) cardEl.classList.add('is-active');
+        if (rowsEl) renderStatRows(rowsEl, [player], prevStats);
+      } else {
+        if (nameEl) nameEl.textContent = '—';
+        if (cardEl) cardEl.classList.remove('is-active');
+        if (rowsEl) renderStatEmptyPlayer(rowsEl, team);
+      }
+    };
+
+    select.addEventListener('change', update);
+    update();
+  });
+}
+
+function renderStatEmptyPlayer(container, team) {
+  container.innerHTML =
+    `<p class="player-stats-empty t-mono">// Selecione o jogador ${team || ''}</p>`;
 }
 
 function renderStatRows(container, players, prevStats) {

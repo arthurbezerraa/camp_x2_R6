@@ -76,6 +76,14 @@
 .navbar__link:hover { color: var(--accent); }
 .navbar__link:hover::after { transform: scaleX(1); }
 
+.navbar__item--sep {
+  width: 1px;
+  height: 18px;
+  background: var(--line-strong);
+  list-style: none;
+  margin: 0 calc(var(--space-2) * -1);
+}
+
 .navbar__toggle {
   display: none;
   flex-direction: column;
@@ -115,6 +123,13 @@
 
   .navbar__item { width: 100%; }
 
+  .navbar__item--sep {
+    width: 100%;
+    height: 1px;
+    background: var(--line-subtle);
+    margin: var(--space-2) 0;
+  }
+
   .navbar__link {
     display: block;
     padding: var(--space-3) 0;
@@ -122,6 +137,11 @@
   }
 
   .navbar__item:last-child .navbar__link { border-bottom: none; }
+}
+
+@media (max-width: 1023px) and (min-width: 768px) {
+  .navbar__links { gap: var(--space-4); }
+  .navbar__link { font-size: 10px; letter-spacing: 0.14em; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -611,4 +631,157 @@
   color: var(--text-muted);
   padding: var(--space-3) 0;
   font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GROUPS GRID (X1 — 4 grupos)
+═══════════════════════════════════════════════════════════ */
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+@media (max-width: 767px) {
+  .groups-grid { grid-template-columns: 1fr; }
+}
+
+.group-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--line-subtle);
+  transition: border-color var(--dur-base) var(--ease-snap);
+}
+
+.group-card:hover { border-color: var(--line-strong); }
+
+.group-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line-subtle);
+  background: var(--bg-elevated);
+}
+
+.group-card__num {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.group-card__title {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: clamp(20px, 2.5vw, 28px);
+  letter-spacing: -0.01em;
+}
+
+.group-card__count {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.group-card__empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--space-6) var(--space-5);
+  font-size: 12px;
+}
+
+/* ── Group inner table ── */
+.group-table { padding: var(--space-2) var(--space-3); }
+
+.group-table__head,
+.gr {
+  display: grid;
+  grid-template-columns: 36px 1fr 56px 36px 36px 64px;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.group-table__head {
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px dashed var(--line-subtle);
+}
+
+.group-table__head > div {
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.gr {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line-subtle);
+  transition: background var(--dur-fast) var(--ease-snap);
+}
+
+.gr:last-child { border-bottom: none; }
+.gr:hover { background: var(--bg-elevated); }
+
+.gr__pos {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.gr__pos-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.gr--leader .gr__pos-num { color: var(--accent); }
+
+.gr__lead-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.gr__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.gr__name-text {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gr--leader .gr__name-text { color: var(--accent); }
+
+.gr__pts {
+  text-align: right;
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.gr__stat {
+  text-align: right;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.gr__sld {
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
 }

@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Geist:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="{% static 'core/css/tokens.css' %}?v=2">
-  <link rel="stylesheet" href="{% static 'core/css/base.css' %}?v=2">
-  <link rel="stylesheet" href="{% static 'core/css/components.css' %}?v=2">
-  <link rel="stylesheet" href="{% static 'core/css/pages.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'core/css/tokens.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'core/css/base.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'core/css/components.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'core/css/pages.css' %}?v=3">
 </head>
 <body>
 
@@ -37,10 +37,17 @@
 
           <ul class="navbar__links" id="nav-links" role="list">
             <li class="navbar__item">
-              <a href="{% url 'home' %}" class="navbar__link">Classificação</a>
+              <a href="{% url 'home' %}" class="navbar__link">X2 / Classificação</a>
             </li>
             <li class="navbar__item">
-              <a href="{% url 'cadastrar_partida' %}" class="navbar__link">Cadastrar Partida</a>
+              <a href="{% url 'cadastrar_partida' %}" class="navbar__link">X2 / Cadastrar</a>
+            </li>
+            <li class="navbar__item navbar__item--sep" aria-hidden="true"></li>
+            <li class="navbar__item">
+              <a href="{% url 'home_x1' %}" class="navbar__link">X1 / Classificação</a>
+            </li>
+            <li class="navbar__item">
+              <a href="{% url 'cadastrar_partida_x1' %}" class="navbar__link">X1 / Cadastrar</a>
             </li>
           </ul>
 
@@ -80,7 +87,7 @@
   </footer>
 
   <!-- JS -->
-  <script src="{% static 'core/js/ui.js' %}?v=2"></script>
+  <script src="{% static 'core/js/ui.js' %}?v=3"></script>
   {% block extra_js %}{% endblock %}
 
 </body>

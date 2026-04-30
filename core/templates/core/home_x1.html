@@ -1,0 +1,243 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Classificação — Campeonato X1{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ──────────────────────────────────────────────── -->
+<section class="hero" aria-label="Cabeçalho do campeonato X1">
+
+  <div class="hero__eyebrow" data-reveal="0">
+    <span class="t-eyebrow hero__eyebrow-left">Temporada 01 / R6 Solo</span>
+    <span class="status-badge">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="t-eyebrow">[Status: Ativo]</span>
+    </span>
+  </div>
+
+  <h1 class="t-display-xl hero__title" data-reveal="1">
+    CAMPEONATO<br>X1<span class="accent-dot">.</span>
+  </h1>
+
+  <hr class="divider-stencil hero__divider" data-reveal="2" aria-hidden="true">
+
+  <p class="t-mono hero__meta" data-reveal="3">
+    4 GRUPOS&nbsp;&nbsp;·&nbsp;&nbsp;4 JOGADORES POR GRUPO&nbsp;&nbsp;·&nbsp;&nbsp;MD1
+  </p>
+
+</section>
+
+<!-- ── Grupos ────────────────────────────────────────────── -->
+<section class="section" aria-labelledby="heading-grupos">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-grupos">Grupos // Classificação</h2>
+    <span class="t-mono section-head__meta">↻ Atualizado agora</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  {% if grupos %}
+    <div class="groups-grid">
+      {% for g in grupos %}
+        <article class="group-card" aria-label="Classificação do {{ g.grupo.nome }}">
+
+          <header class="group-card__head">
+            <p class="t-mono group-card__num">{{ forloop.counter|stringformat:"02d" }}</p>
+            <h3 class="t-display-md group-card__title">{{ g.grupo.nome|upper }}</h3>
+            <span class="t-eyebrow group-card__count">{{ g.jogadores|length }} jogador{{ g.jogadores|length|pluralize:"es" }}</span>
+          </header>
+
+          {% if g.jogadores %}
+            <div class="group-table" role="table">
+              <div class="group-table__head" role="row">
+                <div role="columnheader">Pos</div>
+                <div role="columnheader">Jogador</div>
+                <div role="columnheader" style="text-align:right">Pts</div>
+                <div role="columnheader" style="text-align:right">V</div>
+                <div role="columnheader" style="text-align:right">D</div>
+                <div role="columnheader" style="text-align:right">Saldo</div>
+              </div>
+
+              {% for player in g.jogadores %}
+                <div class="gr {% if forloop.first %}gr--leader{% endif %}" role="row">
+                  <div class="gr__pos" role="cell">
+                    <span class="gr__pos-num">{{ forloop.counter|stringformat:"02d" }}</span>
+                    {% if forloop.first %}<span class="gr__lead-dot" aria-hidden="true"></span>{% endif %}
+                  </div>
+                  <div class="gr__name" role="cell">
+                    <span class="gr__name-text">{{ player.nome }}</span>
+                    {% if forloop.first %}<span class="badge-lead">Líder</span>{% endif %}
+                  </div>
+                  <div class="gr__pts t-mono-lg" role="cell">{{ player.x1_pontos }}</div>
+                  <div class="gr__stat t-mono" role="cell">{{ player.x1_vitorias }}</div>
+                  <div class="gr__stat t-mono" role="cell">{{ player.x1_derrotas }}</div>
+                  <div class="gr__sld {% if player.x1_saldo_rounds > 0 %}sld-pos{% elif player.x1_saldo_rounds < 0 %}sld-neg{% endif %}"
+                       role="cell">
+                    {% if player.x1_saldo_rounds > 0 %}+{% endif %}{{ player.x1_saldo_rounds }}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="group-card__empty t-mono">// Sem jogadores no grupo</p>
+          {% endif %}
+
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p class="t-eyebrow empty-state__title">// Sem grupos cadastrados</p>
+      <p class="t-body-sm empty-state__desc">Cadastre os grupos e atribua jogadores pelo painel administrativo para iniciar o X1.</p>
+      <a href="/admin/" class="btn-outline t-eyebrow">Abrir Admin</a>
+    </div>
+  {% endif %}
+
+</section>
+
+<!-- ── Jogadores X1 ──────────────────────────────────────── -->
+<section class="section" aria-labelledby="heading-jogadores-x1">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-jogadores-x1">Jogadores X1 // Estatísticas</h2>
+    <span class="t-mono section-head__meta">K/D acumulado</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  {% if players %}
+    <div class="players-grid">
+      {% for player in players %}
+        <article class="player-card" data-kd="{{ player.x1_kd_ratio }}">
+
+          <p class="t-display-md player-card__rank">{{ forloop.counter|stringformat:"02d" }}</p>
+          <h3 class="t-display-lg player-card__name">{{ player.nome|upper }}</h3>
+
+          <hr class="player-card__divider" aria-hidden="true">
+
+          <div class="player-card__kd-row">
+            <span class="t-eyebrow player-card__kd-label">K / D</span>
+            <span class="t-mono-lg player-card__kd-value">{{ player.x1_kd_ratio }}</span>
+          </div>
+          <div class="kd-bar-track" aria-hidden="true">
+            <div class="kd-bar-fill" data-kd="{{ player.x1_kd_ratio }}"></div>
+          </div>
+
+          <dl>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">Grupo</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.grupo_x1.nome|default:"—" }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">Kills</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.x1_kills }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">Deaths</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.x1_deaths }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">V. Partidas</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.x1_vitorias }}</dd>
+            </div>
+          </dl>
+
+        </article>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state" style="padding: var(--space-7) 0;">
+      <p class="t-eyebrow empty-state__title">// Sem jogadores nos grupos</p>
+      <p class="t-body-sm empty-state__desc">Atribua jogadores aos grupos pelo painel administrativo.</p>
+    </div>
+  {% endif %}
+
+</section>
+
+<!-- ── Histórico de Partidas X1 ──────────────────────────── -->
+<section class="section" aria-labelledby="heading-historico-x1">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-historico-x1">Partidas X1 // Histórico</h2>
+    <span class="t-mono section-head__meta">Últimas 4</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  {% if match_data %}
+    <div class="match-history-grid">
+      {% for md in match_data %}
+        {% with m=md.match %}
+        <article class="match-card">
+
+          <div class="match-card__head">
+            <div class="match-card__badges">
+              {% if m.rodada %}
+                <span class="match-card__badge">Rod. {{ m.rodada }}</span>
+              {% endif %}
+              {% if m.prorrogacao %}
+                <span class="match-card__badge match-card__badge--ot">OT</span>
+              {% endif %}
+            </div>
+            <span class="t-mono match-card__date">{{ m.data|date:"d/m H:i" }}</span>
+          </div>
+
+          <div class="match-card__score">
+            <div class="match-card__side {% if m.vencedor == m.jogador1 %}match-card__side--winner{% endif %}">
+              <span class="match-card__side-name">{{ m.jogador1.nome }}</span>
+            </div>
+            <div class="match-card__nums">
+              <span class="match-card__num">{{ m.rounds_jogador1 }}</span>
+              <span class="match-card__sep">×</span>
+              <span class="match-card__num">{{ m.rounds_jogador2 }}</span>
+            </div>
+            <div class="match-card__side match-card__side--right {% if m.vencedor == m.jogador2 %}match-card__side--winner{% endif %}">
+              <span class="match-card__side-name">{{ m.jogador2.nome }}</span>
+            </div>
+          </div>
+
+          <div class="match-card__players">
+
+            <div class="match-card__team">
+              <div class="match-card__player">
+                <span class="match-card__player-name t-body-sm">{{ md.jogador1_stat.player.nome }}</span>
+                {% if md.jogador1_stat.kills is not None %}
+                  <span class="match-card__player-kd">
+                    <span class="k">{{ md.jogador1_stat.kills }}K</span>&nbsp;/&nbsp;<span class="d">{{ md.jogador1_stat.deaths }}D</span>
+                  </span>
+                {% else %}
+                  <span class="match-card__player-kd" style="font-style:italic">—</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="match-card__team">
+              <div class="match-card__player">
+                <span class="match-card__player-name t-body-sm">{{ md.jogador2_stat.player.nome }}</span>
+                {% if md.jogador2_stat.kills is not None %}
+                  <span class="match-card__player-kd">
+                    <span class="k">{{ md.jogador2_stat.kills }}K</span>&nbsp;/&nbsp;<span class="d">{{ md.jogador2_stat.deaths }}D</span>
+                  </span>
+                {% else %}
+                  <span class="match-card__player-kd" style="font-style:italic">—</span>
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+
+        </article>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state" style="padding: var(--space-7) 0;">
+      <p class="t-eyebrow empty-state__title">// Sem partidas X1 cadastradas</p>
+      <p class="t-body-sm empty-state__desc">Registre partidas para ver o histórico aqui.</p>
+      <a href="{% url 'cadastrar_partida_x1' %}" class="btn-outline t-eyebrow">Cadastrar Partida X1</a>
+    </div>
+  {% endif %}
+
+</section>
+
+{% endblock %}

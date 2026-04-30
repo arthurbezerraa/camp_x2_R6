@@ -1,7 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Duo, Player, Match, MatchPlayerStat
-from .forms import MatchForm
+from .models import (
+    Duo,
+    Player,
+    Match,
+    MatchPlayerStat,
+    GroupX1,
+    X1Match,
+    X1MatchPlayerStat,
+)
+from .forms import MatchForm, X1MatchForm
 
 
 def _build_player_stat(stats_map, player):
@@ -114,5 +122,88 @@ def cadastrar_partida(request):
         'form': form,
         'duos': duos,
         'duos_data': duos_data,
+        'prev_stats': prev_stats,
+    })
+
+
+def _build_x1_player_stat(stats_map, player):
+    s = stats_map.get(player.id)
+    return {
+        'player': player,
+        'kills': s.kills if s else None,
+        'deaths': s.deaths if s else None,
+    }
+
+
+def home_x1(request):
+    grupos_qs = GroupX1.objects.prefetch_related('jogadores').all()
+    grupos = []
+    for g in grupos_qs:
+        grupos.append({
+            'grupo': g,
+            'jogadores': g.jogadores_classificados(),
+        })
+
+    players = list(Player.objects.exclude(grupo_x1__isnull=True))
+    players.sort(key=lambda p: -p.x1_kd_ratio)
+
+    recent_qs = (
+        X1Match.objects
+        .filter(tipo='PONTOS_CORRIDOS')
+        .select_related('jogador1', 'jogador2')
+        .prefetch_related('stats__jogador')
+        .order_by('-data')[:4]
+    )
+
+    match_data = []
+    for m in recent_qs:
+        stats_map = {s.jogador_id: s for s in m.stats.all()}
+        match_data.append({
+            'match': m,
+            'jogador1_stat': _build_x1_player_stat(stats_map, m.jogador1),
+            'jogador2_stat': _build_x1_player_stat(stats_map, m.jogador2),
+        })
+
+    return render(request, 'core/home_x1.html', {
+        'grupos': grupos,
+        'players': players,
+        'match_data': match_data,
+    })
+
+
+def _build_players_data(players):
+    return {
+        str(p.id): {'id': p.id, 'nome': p.nome}
+        for p in players
+    }
+
+
+def cadastrar_partida_x1(request):
+    players = list(Player.objects.order_by('nome'))
+    players_data = _build_players_data(players)
+    prev_stats = {}
+
+    if request.method == 'POST':
+        form = X1MatchForm(request.POST)
+        if form.is_valid():
+            match = form.save()
+            jogador_ids = {match.jogador1_id, match.jogador2_id}
+            for player_id in jogador_ids:
+                X1MatchPlayerStat.objects.create(
+                    partida=match,
+                    jogador_id=player_id,
+                    kills=_parse_stat_int(request.POST.get(f'stat_{player_id}_kills')),
+                    deaths=_parse_stat_int(request.POST.get(f'stat_{player_id}_deaths')),
+                )
+            messages.success(request, 'Partida X1 cadastrada com sucesso.')
+            return redirect('home_x1')
+        prev_stats = _collect_prev_stats(request.POST)
+    else:
+        form = X1MatchForm(initial={'tipo': 'PONTOS_CORRIDOS'})
+
+    return render(request, 'core/cadastrar_partida_x1.html', {
+        'form': form,
+        'players': players,
+        'players_data': players_data,
         'prev_stats': prev_stats,
     })
