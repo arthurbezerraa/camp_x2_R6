@@ -1,0 +1,288 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Classificação — Campeonato X2{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ──────────────────────────────────────────────── -->
+<section class="hero" aria-label="Cabeçalho do campeonato">
+
+  <div class="hero__eyebrow" data-reveal="0">
+    <span class="t-eyebrow hero__eyebrow-left">Temporada 01 / R6 Squad</span>
+    <span class="status-badge">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="t-eyebrow">[Status: Ativo]</span>
+    </span>
+  </div>
+
+  <h1 class="t-display-xl hero__title" data-reveal="1">
+    CAMPEONATO<br>X2<span class="accent-dot">.</span>
+  </h1>
+
+  <hr class="divider-stencil hero__divider" data-reveal="2" aria-hidden="true">
+
+  <p class="t-mono hero__meta" data-reveal="3">
+    8 DUPLAS&nbsp;&nbsp;·&nbsp;&nbsp;7 RODADAS&nbsp;&nbsp;·&nbsp;&nbsp;MD1
+  </p>
+
+</section>
+
+<!-- ── Classificação ─────────────────────────────────────── -->
+<section class="section" aria-labelledby="heading-classificacao">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-classificacao">Duplas // Classificação</h2>
+    <span class="t-mono section-head__meta">↻ Atualizado agora</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  <div class="classification-table" role="table" aria-label="Tabela de classificação">
+
+    {% if duos %}
+
+      <!-- Header -->
+      <div class="classification-header" role="row">
+        <div role="columnheader">Pos</div>
+        <div role="columnheader">Dupla</div>
+        <div role="columnheader" style="text-align:right">Pts</div>
+        <div role="columnheader" style="text-align:right">V</div>
+        <div role="columnheader" style="text-align:right">D</div>
+        <div role="columnheader" style="text-align:right">R+</div>
+        <div role="columnheader" style="text-align:right">R-</div>
+        <div role="columnheader" style="text-align:right">Saldo</div>
+      </div>
+
+      {% for duo in duos %}
+        <div class="cr {% if forloop.first %}cr--leader{% endif %}"
+             role="row"
+             style="--row-delay: {{ forloop.counter0 }}">
+
+          <!-- Posição -->
+          <div class="cr__pos" role="cell">
+            <span class="cr__pos-num">{{ forloop.counter|stringformat:"02d" }}</span>
+            {% if forloop.first %}<span class="cr__lead-dot" aria-hidden="true"></span>{% endif %}
+          </div>
+
+          <!-- Dupla + jogadores -->
+          <div class="cr__duo" role="cell">
+            <span class="cr__duo-name">
+              {{ duo.nome }}
+              {% if forloop.first %}&nbsp;<span class="badge-lead">Líder</span>{% endif %}
+            </span>
+            <span class="cr__duo-sub t-eyebrow">{{ duo.jogador1.nome|upper }} · {{ duo.jogador2.nome|upper }}</span>
+
+            <!-- Stats compactos visíveis só em mobile -->
+            <div class="cr__mobile-stats" aria-hidden="true">
+              <span class="cr__mobile-stat">
+                <span class="t-mono">{{ duo.pontos }}</span>
+                <span class="cr__mobile-label">pts</span>
+              </span>
+              <span class="cr__mobile-stat">
+                <span class="t-mono">{{ duo.vitorias }}</span>
+                <span class="cr__mobile-label">V</span>
+              </span>
+              <span class="cr__mobile-stat">
+                <span class="t-mono">{{ duo.derrotas }}</span>
+                <span class="cr__mobile-label">D</span>
+              </span>
+              <span class="cr__mobile-stat {% if duo.saldo_rounds > 0 %}sld-pos{% elif duo.saldo_rounds < 0 %}sld-neg{% endif %}">
+                <span class="t-mono">{% if duo.saldo_rounds > 0 %}+{% endif %}{{ duo.saldo_rounds }}</span>
+                <span class="cr__mobile-label">Sld</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Pontos -->
+          <div class="cr__pts t-mono-lg" role="cell" aria-label="Pontos: {{ duo.pontos }}">{{ duo.pontos }}</div>
+
+          <!-- Vitórias -->
+          <div class="cr__stat t-mono" role="cell" aria-label="Vitórias: {{ duo.vitorias }}">{{ duo.vitorias }}</div>
+
+          <!-- Derrotas -->
+          <div class="cr__stat t-mono" role="cell" aria-label="Derrotas: {{ duo.derrotas }}">{{ duo.derrotas }}</div>
+
+          <!-- Rounds + -->
+          <div class="cr__stat t-mono" role="cell" aria-label="Rounds ganhos: {{ duo.rounds_ganhos }}">{{ duo.rounds_ganhos }}</div>
+
+          <!-- Rounds - -->
+          <div class="cr__stat t-mono" role="cell" aria-label="Rounds perdidos: {{ duo.rounds_perdidos }}">{{ duo.rounds_perdidos }}</div>
+
+          <!-- Saldo -->
+          <div class="cr__sld {% if duo.saldo_rounds > 0 %}sld-pos{% elif duo.saldo_rounds < 0 %}sld-neg{% endif %}"
+               role="cell"
+               aria-label="Saldo de rounds: {{ duo.saldo_rounds }}">
+            {% if duo.saldo_rounds > 0 %}+{% endif %}{{ duo.saldo_rounds }}
+          </div>
+
+        </div>
+      {% endfor %}
+
+    {% else %}
+
+      <div class="empty-state">
+        <p class="t-eyebrow empty-state__title">// Sem duplas cadastradas</p>
+        <p class="t-body-sm empty-state__desc">Cadastre as duplas pelo painel administrativo para iniciar o campeonato.</p>
+        <a href="/admin/" class="btn-outline t-eyebrow">Abrir Admin</a>
+      </div>
+
+    {% endif %}
+
+  </div>
+
+</section>
+
+<!-- ── Jogadores ─────────────────────────────────────────── -->
+<section class="section" aria-labelledby="heading-jogadores">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-jogadores">Jogadores // Estatísticas</h2>
+    <span class="t-mono section-head__meta">K/D acumulado</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  {% if players %}
+    <div class="players-grid">
+      {% for player in players %}
+        <article class="player-card" data-kd="{{ player.kd_ratio }}">
+
+          <p class="t-display-md player-card__rank">{{ forloop.counter|stringformat:"02d" }}</p>
+          <h3 class="t-display-lg player-card__name">{{ player.nome|upper }}</h3>
+
+          <hr class="player-card__divider" aria-hidden="true">
+
+          <!-- K/D em destaque -->
+          <div class="player-card__kd-row">
+            <span class="t-eyebrow player-card__kd-label">K / D</span>
+            <span class="t-mono-lg player-card__kd-value">{{ player.kd_ratio }}</span>
+          </div>
+          <div class="kd-bar-track" aria-hidden="true">
+            <div class="kd-bar-fill" data-kd="{{ player.kd_ratio }}"></div>
+          </div>
+
+          <!-- Demais stats -->
+          <dl>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">Kills</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.kills }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">Deaths</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.deaths }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">V. Partidas</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.partidas_ganhas }}</dd>
+            </div>
+            <div class="player-card__stat">
+              <dt class="t-eyebrow player-card__stat-label">R. Ganhos</dt>
+              <dd class="t-mono player-card__stat-value">{{ player.rounds_ganhos }}</dd>
+            </div>
+          </dl>
+
+        </article>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state" style="padding: var(--space-7) 0;">
+      <p class="t-eyebrow empty-state__title">// Sem jogadores cadastrados</p>
+      <p class="t-body-sm empty-state__desc">Cadastre os jogadores e duplas pelo painel administrativo.</p>
+    </div>
+  {% endif %}
+
+</section>
+
+<!-- ── Histórico de Partidas ──────────────────────────────── -->
+<section class="section" aria-labelledby="heading-historico">
+
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-historico">Partidas // Histórico</h2>
+    <span class="t-mono section-head__meta">Últimas 4</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  {% if match_data %}
+    <div class="match-history-grid">
+      {% for md in match_data %}
+        {% with m=md.match %}
+        <article class="match-card">
+
+          <!-- Cabeçalho -->
+          <div class="match-card__head">
+            <div class="match-card__badges">
+              {% if m.rodada %}
+                <span class="match-card__badge">Rod. {{ m.rodada }}</span>
+              {% endif %}
+              {% if m.prorrogacao %}
+                <span class="match-card__badge match-card__badge--ot">OT</span>
+              {% endif %}
+            </div>
+            <span class="t-mono match-card__date">{{ m.data|date:"d/m H:i" }}</span>
+          </div>
+
+          <!-- Placar -->
+          <div class="match-card__score">
+            <div class="match-card__side {% if m.vencedora == m.dupla1 %}match-card__side--winner{% endif %}">
+              <span class="match-card__side-name">{{ m.dupla1 }}</span>
+            </div>
+            <div class="match-card__nums">
+              <span class="match-card__num">{{ m.rounds_dupla1 }}</span>
+              <span class="match-card__sep">×</span>
+              <span class="match-card__num">{{ m.rounds_dupla2 }}</span>
+            </div>
+            <div class="match-card__side match-card__side--right {% if m.vencedora == m.dupla2 %}match-card__side--winner{% endif %}">
+              <span class="match-card__side-name">{{ m.dupla2 }}</span>
+            </div>
+          </div>
+
+          <!-- Stats dos jogadores -->
+          <div class="match-card__players">
+
+            <div class="match-card__team">
+              {% for s in md.dupla1_stats %}
+                <div class="match-card__player">
+                  <span class="match-card__player-name t-body-sm">{{ s.player.nome }}</span>
+                  {% if s.kills is not None %}
+                    <span class="match-card__player-kd">
+                      <span class="k">{{ s.kills }}K</span>&nbsp;/&nbsp;<span class="d">{{ s.deaths }}D</span>
+                    </span>
+                  {% else %}
+                    <span class="match-card__player-kd" style="font-style:italic">—</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="match-card__team">
+              {% for s in md.dupla2_stats %}
+                <div class="match-card__player">
+                  <span class="match-card__player-name t-body-sm">{{ s.player.nome }}</span>
+                  {% if s.kills is not None %}
+                    <span class="match-card__player-kd">
+                      <span class="k">{{ s.kills }}K</span>&nbsp;/&nbsp;<span class="d">{{ s.deaths }}D</span>
+                    </span>
+                  {% else %}
+                    <span class="match-card__player-kd" style="font-style:italic">—</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+
+          </div>
+
+        </article>
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div class="empty-state" style="padding: var(--space-7) 0;">
+      <p class="t-eyebrow empty-state__title">// Sem partidas cadastradas</p>
+      <p class="t-body-sm empty-state__desc">Registre partidas para ver o histórico aqui.</p>
+      <a href="{% url 'cadastrar_partida' %}" class="btn-outline t-eyebrow">Cadastrar Partida</a>
+    </div>
+  {% endif %}
+
+</section>
+
+{% endblock %}

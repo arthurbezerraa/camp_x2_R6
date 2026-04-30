@@ -1,0 +1,144 @@
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+img, svg { display: block; max-width: 100%; }
+input, select, button, textarea { font: inherit; }
+
+/* ── Base ──────────────────────────────────────────────────── */
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255, 122, 26, 0.06), transparent 60%),
+    var(--bg-base);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+main {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 95px,
+    rgba(255, 122, 26, 0.02) 95px,
+    rgba(255, 122, 26, 0.02) 96px
+  );
+}
+
+/* ── Container ─────────────────────────────────────────────── */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+@media (max-width: 767px) {
+  .container { padding: 0 var(--space-4); }
+}
+
+/* ── Tipografia ────────────────────────────────────────────── */
+.t-display-xl {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(64px, 9vw, 144px);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+}
+.t-display-lg {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 0.9;
+}
+.t-display-md {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 0.95;
+}
+.t-eyebrow {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.t-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.t-body-sm {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.t-mono-lg {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Utilidades ────────────────────────────────────────────── */
+.divider-stencil {
+  border: none;
+  border-top: 1px dashed var(--line-subtle);
+}
+
+.badge-lead {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--text-inverted);
+  padding: 2px 6px;
+  font-family: var(--font-body);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+}
+
+.sld-pos { color: var(--positive); }
+.sld-neg { color: var(--negative); }
+
+/* ── Focus ─────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-inset); }
+::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: var(--radius-sm); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Links ─────────────────────────────────────────────────── */
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); }
+
+/* ── Animações de entrada ──────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes err-reveal {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fade-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

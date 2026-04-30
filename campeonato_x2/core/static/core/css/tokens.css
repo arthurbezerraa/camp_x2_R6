@@ -1,0 +1,46 @@
+:root {
+  /* ── Superfícies ──────────────────────────── */
+  --bg-base:      #0A0B0D;
+  --bg-surface:   #13151A;
+  --bg-elevated:  #1A1D24;
+  --bg-inset:     #07080A;
+
+  /* ── Linhas ───────────────────────────────── */
+  --line-subtle:  #1F232C;
+  --line-strong:  #2D3340;
+  --line-accent:  #FF7A1A;
+
+  /* ── Texto ────────────────────────────────── */
+  --text-primary:   #E8E9EB;
+  --text-secondary: #9098A6;
+  --text-muted:     #5C6470;
+  --text-inverted:  #0A0B0D;
+
+  /* ── Acentos ──────────────────────────────── */
+  --accent:         #FF7A1A;
+  --accent-hover:   #FF8F3D;
+  --accent-muted:   #4A2810;
+  --positive:       #4ADE80;
+  --negative:       #F87171;
+
+  /* ── Tipografia ───────────────────────────── */
+  --font-display: 'Big Shoulders Display', 'Oswald', sans-serif;
+  --font-body:    'Geist', 'Manrope', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Space Mono', monospace;
+
+  /* ── Espaçamento ──────────────────────────── */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px;  --space-5: 24px;  --space-6: 32px;
+  --space-7: 48px;  --space-8: 64px;  --space-9: 96px;
+
+  /* ── Raios ────────────────────────────────── */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* ── Transições ───────────────────────────── */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap:   cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast:    120ms;
+  --dur-base:    220ms;
+  --dur-slow:    420ms;
+}

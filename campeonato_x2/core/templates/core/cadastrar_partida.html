@@ -1,0 +1,226 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Cadastrar Partida — Campeonato X2{% endblock %}
+
+{% block content %}
+
+<!-- ── Page Header ─────────────────────────────────────── -->
+<section class="page-header" aria-label="Cabeçalho da página">
+  <p class="t-eyebrow page-header__eyebrow">// Nova partida</p>
+  <h1 class="t-display-lg page-header__title">
+    CADASTRAR<br>PARTIDA<span class="accent-dot" style="color:var(--accent)">.</span>
+  </h1>
+  <hr class="divider-stencil" style="margin-top: var(--space-5);" aria-hidden="true">
+</section>
+
+<!-- ── Tipo de Partida ─────────────────────────────────── -->
+<section class="section" aria-labelledby="heading-tipo">
+  <div class="section-head">
+    <h2 class="t-eyebrow section-head__title" id="heading-tipo">Tipo // Modo de jogo</h2>
+    <span class="t-mono section-head__meta">Selecione um modo</span>
+  </div>
+  <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  <div class="type-cards-grid" role="radiogroup" aria-label="Tipo de partida">
+    <div class="type-card is-active" data-tipo="PONTOS_CORRIDOS"
+         tabindex="0" role="radio" aria-checked="true">
+      <p class="t-mono type-card__num">01</p>
+      <h3 class="t-display-md type-card__title">Pontos Corridos</h3>
+      <p class="type-card__desc">Liga regular</p>
+      <span class="type-card__arrow">→ ATIVO</span>
+    </div>
+
+    <div class="type-card type-card--disabled" data-tipo="MATA_MATA"
+         tabindex="0" role="radio" aria-checked="false" aria-disabled="true">
+      <p class="t-mono type-card__num">02</p>
+      <h3 class="t-display-md type-card__title">Mata Mata</h3>
+      <p class="type-card__desc">Eliminatória</p>
+      <span class="type-card__arrow">→ EM BREVE</span>
+    </div>
+  </div>
+
+  <div class="mm-notice" id="mm-notice" role="status" aria-live="polite">
+    <span>// Funcionalidade em desenvolvimento &mdash; Mata Mata estará disponível em breve.</span>
+  </div>
+</section>
+
+<!-- ── Formulário ──────────────────────────────────────── -->
+<form method="post" action="{% url 'cadastrar_partida' %}"
+      class="match-form form-container" id="form-pontos-corridos" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="tipo" value="PONTOS_CORRIDOS" id="tipo-hidden">
+
+  {% if form.non_field_errors %}
+    <div class="form-error-banner">
+      {% for error in form.non_field_errors %}
+        <p class="field-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Bloco: Confronto -->
+  <div class="form-block">
+    <p class="t-eyebrow form-block__label">// Confronto</p>
+
+    <div class="duo-selectors">
+      <div>
+        <label class="t-eyebrow field-label" for="{{ form.dupla1.id_for_label }}">Dupla 1</label>
+        <select name="{{ form.dupla1.html_name }}"
+                id="{{ form.dupla1.id_for_label }}"
+                class="duo-select"
+                data-duo-select
+                data-team="1"
+                data-players-target="duo1-players"
+                {% if form.dupla1.errors %}data-has-error{% endif %}>
+          <option value="">— Selecione —</option>
+          {% for duo in duos %}
+            <option value="{{ duo.id }}"
+                    {% if form.dupla1.value == duo.id|stringformat:'s' %}selected{% endif %}>
+              {{ duo.nome }}
+            </option>
+          {% endfor %}
+        </select>
+        <p class="t-eyebrow duo-players" id="duo1-players"></p>
+        {% if form.dupla1.errors %}
+          <p class="field-error">{{ form.dupla1.errors|join:', ' }}</p>
+        {% endif %}
+      </div>
+
+      <div class="vs-divider t-display-md">×</div>
+
+      <div>
+        <label class="t-eyebrow field-label" for="{{ form.dupla2.id_for_label }}">Dupla 2</label>
+        <select name="{{ form.dupla2.html_name }}"
+                id="{{ form.dupla2.id_for_label }}"
+                class="duo-select"
+                data-duo-select
+                data-team="2"
+                data-players-target="duo2-players"
+                {% if form.dupla2.errors %}data-has-error{% endif %}>
+          <option value="">— Selecione —</option>
+          {% for duo in duos %}
+            <option value="{{ duo.id }}"
+                    {% if form.dupla2.value == duo.id|stringformat:'s' %}selected{% endif %}>
+              {{ duo.nome }}
+            </option>
+          {% endfor %}
+        </select>
+        <p class="t-eyebrow duo-players" id="duo2-players"></p>
+        {% if form.dupla2.errors %}
+          <p class="field-error">{{ form.dupla2.errors|join:', ' }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloco: Placar -->
+  <div class="form-block">
+    <p class="t-eyebrow form-block__label">// Placar (rounds)</p>
+
+    <div class="score-wrap">
+      <div>
+        <input type="number"
+               name="{{ form.rounds_dupla1.html_name }}"
+               id="{{ form.rounds_dupla1.id_for_label }}"
+               class="score-input {% if form.rounds_dupla1.errors %}is-error{% endif %}"
+               min="0" max="8" placeholder="0"
+               value="{{ form.rounds_dupla1.value|default:'' }}">
+        {% if form.rounds_dupla1.errors %}
+          <p class="field-error">{{ form.rounds_dupla1.errors|join:', ' }}</p>
+        {% endif %}
+      </div>
+
+      <div class="score-sep">×</div>
+
+      <div>
+        <input type="number"
+               name="{{ form.rounds_dupla2.html_name }}"
+               id="{{ form.rounds_dupla2.id_for_label }}"
+               class="score-input {% if form.rounds_dupla2.errors %}is-error{% endif %}"
+               min="0" max="8" placeholder="0"
+               value="{{ form.rounds_dupla2.value|default:'' }}">
+        {% if form.rounds_dupla2.errors %}
+          <p class="field-error">{{ form.rounds_dupla2.errors|join:', ' }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <p class="score-hint t-mono">
+      Sem OT: 7×N (N ∈ [0,5]) &nbsp;·&nbsp; Com OT: 8×6 ou 8×7 &nbsp;·&nbsp;
+      Vit. limpa = 3 / 0 &nbsp;·&nbsp; Vit. OT = 2 / 1
+    </p>
+  </div>
+
+  <!-- Bloco: Configurações -->
+  <div class="form-block">
+    <p class="t-eyebrow form-block__label">// Configurações</p>
+
+    <div class="form-block--row">
+      <label class="toggle-switch" for="{{ form.prorrogacao.id_for_label }}">
+        <input type="checkbox"
+               class="toggle-input"
+               name="{{ form.prorrogacao.html_name }}"
+               id="{{ form.prorrogacao.id_for_label }}"
+               {% if form.prorrogacao.value %}checked{% endif %}>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-text">
+          <span class="toggle-text__title">Houve prorrogação</span>
+          <span class="t-mono toggle-text__sub">Marque se foi para 8×N</span>
+        </span>
+      </label>
+
+      <div>
+        <label class="t-eyebrow field-label" for="{{ form.rodada.id_for_label }}">Rodada (1–7)</label>
+        <input type="number"
+               class="field-input {% if form.rodada.errors %}is-error{% endif %}"
+               name="{{ form.rodada.html_name }}"
+               id="{{ form.rodada.id_for_label }}"
+               min="1" max="7" placeholder="—"
+               value="{{ form.rodada.value|default:'' }}">
+        {% if form.rodada.errors %}
+          <p class="field-error">{{ form.rodada.errors|join:', ' }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloco: Estatísticas dos Jogadores -->
+  <div class="form-block player-stats-block">
+    <div class="form-block__heading">
+      <p class="t-eyebrow form-block__label">// Estatísticas dos jogadores</p>
+      <span class="t-mono form-block__hint">Kills · Deaths por jogador</span>
+    </div>
+
+    <div class="player-stats-grid">
+      <div class="player-stats-team" data-team-card="1">
+        <div class="player-stats-team__head">
+          <span class="t-eyebrow player-stats-team__label">Dupla 1</span>
+          <span class="t-mono player-stats-team__name" id="team1-name">—</span>
+        </div>
+        <div class="player-stats-rows" id="team1-rows" data-team="1">
+          <p class="player-stats-empty t-mono">// Selecione a dupla 1</p>
+        </div>
+      </div>
+
+      <div class="player-stats-team" data-team-card="2">
+        <div class="player-stats-team__head">
+          <span class="t-eyebrow player-stats-team__label">Dupla 2</span>
+          <span class="t-mono player-stats-team__name" id="team2-name">—</span>
+        </div>
+        <div class="player-stats-rows" id="team2-rows" data-team="2">
+          <p class="player-stats-empty t-mono">// Selecione a dupla 2</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="submit-btn">
+    <span class="submit-btn__text">SALVAR PARTIDA</span>
+    <span class="submit-btn__arrow">→</span>
+  </button>
+</form>
+
+{{ duos_data|json_script:"duos-data" }}
+{{ prev_stats|json_script:"prev-stats-data" }}
+
+{% endblock %}

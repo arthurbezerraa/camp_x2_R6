@@ -1,0 +1,87 @@
+{% load static %}<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Campeonato X2{% endblock %}</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Geist:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'core/css/tokens.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'core/css/base.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'core/css/components.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'core/css/pages.css' %}?v=2">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header>
+    <nav class="navbar" aria-label="Navegação principal">
+      <div class="container">
+        <div class="navbar__inner">
+
+          <a href="{% url 'home' %}" class="navbar__logo" aria-label="Campeonato X2 — início">
+            <span class="navbar__logo-dot" aria-hidden="true"></span>
+            X2
+          </a>
+
+          <button class="navbar__toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-links">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+
+          <ul class="navbar__links" id="nav-links" role="list">
+            <li class="navbar__item">
+              <a href="{% url 'home' %}" class="navbar__link">Classificação</a>
+            </li>
+            <li class="navbar__item">
+              <a href="{% url 'cadastrar_partida' %}" class="navbar__link">Cadastrar Partida</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Messages -->
+  {% if messages %}
+    <div class="container messages-container" role="status" aria-live="polite">
+      {% for message in messages %}
+        <div class="alert-msg">
+          <svg class="alert-msg__icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm.75 10.5h-1.5v-1.5h1.5v1.5zm0-3h-1.5V4.5h1.5V8.5z" fill="currentColor"/>
+          </svg>
+          <span class="alert-msg__text">{{ message }}</span>
+          <button class="alert-msg__close" aria-label="Fechar mensagem">✕</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Content -->
+  <main>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top: 1px solid var(--line-subtle); margin-top: var(--space-9);">
+    <div class="container" style="padding-top: var(--space-5); padding-bottom: var(--space-5); display: flex; justify-content: space-between; align-items: center;">
+      <span class="t-eyebrow" style="color: var(--text-muted)">X2 // Rainbow Six Siege</span>
+      <a href="/admin/" class="t-eyebrow" style="color: var(--text-muted)">Admin</a>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <script src="{% static 'core/js/ui.js' %}?v=2"></script>
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>
