@@ -46,8 +46,8 @@ class X1MatchForm(forms.ModelForm):
         fields = ['tipo', 'jogador1', 'jogador2', 'rounds_jogador1', 'rounds_jogador2', 'prorrogacao', 'rodada']
         widgets = {
             'tipo': forms.RadioSelect(),
-            'rounds_jogador1': forms.NumberInput(attrs={'min': 0, 'max': 8}),
-            'rounds_jogador2': forms.NumberInput(attrs={'min': 0, 'max': 8}),
+            'rounds_jogador1': forms.NumberInput(attrs={'min': 0, 'max': 5}),
+            'rounds_jogador2': forms.NumberInput(attrs={'min': 0, 'max': 5}),
             'rodada': forms.NumberInput(attrs={'min': 1, 'max': 7}),
         }
         labels = {

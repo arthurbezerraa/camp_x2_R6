@@ -353,21 +353,21 @@ class X1Match(models.Model):
 
         if self.prorrogacao:
             valid = (
-                (r1 == 8 and r2 in (6, 7)) or
-                (r2 == 8 and r1 in (6, 7))
+                (r1 == 5 and r2 in (3, 4)) or
+                (r2 == 5 and r1 in (3, 4))
             )
             if not valid:
                 raise ValidationError(
-                    'Com prorrogação, o placar deve ser 8×6 ou 8×7 (em qualquer direção).'
+                    'Com prorrogação, o placar deve ser 5×3 ou 5×4 (em qualquer direção).'
                 )
         else:
             valid = (
-                (r1 == 7 and 0 <= r2 <= 5) or
-                (r2 == 7 and 0 <= r1 <= 5)
+                (r1 == 4 and 0 <= r2 <= 2) or
+                (r2 == 4 and 0 <= r1 <= 2)
             )
             if not valid:
                 raise ValidationError(
-                    'Sem prorrogação, o placar deve ser 7×N (N entre 0 e 5) em qualquer direção.'
+                    'Sem prorrogação, o placar deve ser 4×N (N entre 0 e 2) em qualquer direção.'
                 )
 
     def vencedor(self):
