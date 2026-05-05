@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.db.models import Q
 from .models import (
     Duo,
     Player,
@@ -30,17 +31,39 @@ def home(request):
     players = list(Player.objects.all())
     players.sort(key=lambda p: -p.kd_ratio)
 
+    filter_dupla = (request.GET.get('dupla') or '').strip()
+    filter_jogador = (request.GET.get('jogador') or '').strip()
+    filter_ot = request.GET.get('ot') == '1'
+    is_filtered = bool(filter_dupla or filter_jogador or filter_ot)
+
+    recent_qs = Match.objects.filter(tipo='PONTOS_CORRIDOS')
+
+    if filter_dupla.isdigit():
+        recent_qs = recent_qs.filter(
+            Q(dupla1_id=filter_dupla) | Q(dupla2_id=filter_dupla)
+        )
+    if filter_jogador.isdigit():
+        recent_qs = recent_qs.filter(
+            Q(dupla1__jogador1_id=filter_jogador)
+            | Q(dupla1__jogador2_id=filter_jogador)
+            | Q(dupla2__jogador1_id=filter_jogador)
+            | Q(dupla2__jogador2_id=filter_jogador)
+        )
+    if filter_ot:
+        recent_qs = recent_qs.filter(prorrogacao=True)
+
     recent_qs = (
-        Match.objects
-        .filter(tipo='PONTOS_CORRIDOS')
+        recent_qs
         .select_related(
             'dupla1', 'dupla2',
             'dupla1__jogador1', 'dupla1__jogador2',
             'dupla2__jogador1', 'dupla2__jogador2',
         )
         .prefetch_related('stats__jogador')
-        .order_by('-data')[:4]
+        .order_by('-data')
     )
+    if not is_filtered:
+        recent_qs = recent_qs[:4]
 
     match_data = []
     for m in recent_qs:
@@ -57,10 +80,20 @@ def home(request):
             ],
         })
 
+    duos_filter = list(Duo.objects.order_by('nome'))
+    players_filter = list(Player.objects.order_by('nome'))
+
     return render(request, 'core/home.html', {
         'duos': duos,
         'players': players,
         'match_data': match_data,
+        'duos_filter': duos_filter,
+        'players_filter': players_filter,
+        'filter_dupla': filter_dupla,
+        'filter_jogador': filter_jogador,
+        'filter_ot': filter_ot,
+        'is_filtered': is_filtered,
+        'match_count': len(match_data),
     })
 
 
@@ -147,13 +180,27 @@ def home_x1(request):
     players = list(Player.objects.exclude(grupo_x1__isnull=True))
     players.sort(key=lambda p: -p.x1_kd_ratio)
 
+    filter_jogador = (request.GET.get('jogador') or '').strip()
+    filter_ot = request.GET.get('ot') == '1'
+    is_filtered = bool(filter_jogador or filter_ot)
+
+    recent_qs = X1Match.objects.filter(tipo='PONTOS_CORRIDOS')
+
+    if filter_jogador.isdigit():
+        recent_qs = recent_qs.filter(
+            Q(jogador1_id=filter_jogador) | Q(jogador2_id=filter_jogador)
+        )
+    if filter_ot:
+        recent_qs = recent_qs.filter(prorrogacao=True)
+
     recent_qs = (
-        X1Match.objects
-        .filter(tipo='PONTOS_CORRIDOS')
+        recent_qs
         .select_related('jogador1', 'jogador2')
         .prefetch_related('stats__jogador')
-        .order_by('-data')[:4]
+        .order_by('-data')
     )
+    if not is_filtered:
+        recent_qs = recent_qs[:4]
 
     match_data = []
     for m in recent_qs:
@@ -164,10 +211,19 @@ def home_x1(request):
             'jogador2_stat': _build_x1_player_stat(stats_map, m.jogador2),
         })
 
+    players_filter = list(
+        Player.objects.exclude(grupo_x1__isnull=True).order_by('nome')
+    )
+
     return render(request, 'core/home_x1.html', {
         'grupos': grupos,
         'players': players,
         'match_data': match_data,
+        'players_filter': players_filter,
+        'filter_jogador': filter_jogador,
+        'filter_ot': filter_ot,
+        'is_filtered': is_filtered,
+        'match_count': len(match_data),
     })
 
 

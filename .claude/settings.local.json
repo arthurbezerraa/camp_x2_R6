@@ -3,7 +3,14 @@
     "allow": [
       "Bash(python manage.py makemigrations core)",
       "Bash(python manage.py migrate)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(grep -E \"db\\\\.sqlite3$|__pycache__\")",
+      "Bash(git rm *)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('core/views.py'\\).read\\(\\)\\)\")",
+      "Bash(python manage.py check)"
     ]
   }
 }

@@ -634,6 +634,137 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   MATCH FILTERS
+═══════════════════════════════════════════════════════════ */
+.match-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--line-subtle);
+}
+
+.match-filters__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 180px;
+  flex: 1 1 200px;
+}
+
+.match-filters__label {
+  color: var(--text-muted);
+}
+
+.match-filters__select {
+  height: 40px;
+  background: var(--bg-inset);
+  border: none;
+  border-bottom: 2px solid var(--line-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 0 var(--space-3);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%235C6470' stroke-width='1.5' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+  transition: border-color var(--dur-fast);
+}
+
+.match-filters__select:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+.match-filters__check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  color: var(--text-secondary);
+  user-select: none;
+  padding-bottom: var(--space-1);
+}
+
+.match-filters__check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.match-filters__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+  padding-bottom: var(--space-1);
+}
+
+.match-filters__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast), background var(--dur-fast);
+}
+
+.match-filters__btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.match-filters__btn--apply {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.match-filters__btn--apply:hover {
+  background: var(--accent-muted);
+}
+
+.match-filters__btn--clear {
+  text-decoration: none;
+}
+
+@media (max-width: 600px) {
+  .match-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .match-filters__field {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .match-filters__actions {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+
+  .match-filters__btn {
+    flex: 1 1 auto;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
    GROUPS GRID (X1 — 4 grupos)
 ═══════════════════════════════════════════════════════════ */
 .groups-grid {

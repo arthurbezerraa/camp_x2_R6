@@ -159,9 +159,35 @@
 
   <div class="section-head">
     <h2 class="t-eyebrow section-head__title" id="heading-historico-x1">Partidas X1 // Histórico</h2>
-    <span class="t-mono section-head__meta">Últimas 4</span>
+    <span class="t-mono section-head__meta">
+      {% if is_filtered %}Filtrado · {{ match_count }} partida{{ match_count|pluralize:"s" }}{% else %}Últimas 4{% endif %}
+    </span>
   </div>
   <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
+
+  <form method="get" action="{% url 'home_x1' %}#heading-historico-x1" class="match-filters" aria-label="Filtros de partidas X1">
+    <div class="match-filters__field">
+      <label class="t-eyebrow match-filters__label" for="filter-jogador-x1">Jogador</label>
+      <select name="jogador" id="filter-jogador-x1" class="match-filters__select">
+        <option value="">— Todos —</option>
+        {% for p in players_filter %}
+          <option value="{{ p.id }}" {% if filter_jogador == p.id|stringformat:'s' %}selected{% endif %}>{{ p.nome }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <label class="match-filters__check" for="filter-ot-x1">
+      <input type="checkbox" name="ot" id="filter-ot-x1" value="1" {% if filter_ot %}checked{% endif %}>
+      <span class="t-eyebrow">Apenas com OT</span>
+    </label>
+
+    <div class="match-filters__actions">
+      <button type="submit" class="match-filters__btn match-filters__btn--apply t-eyebrow">Filtrar</button>
+      {% if is_filtered %}
+        <a href="{% url 'home_x1' %}#heading-historico-x1" class="match-filters__btn match-filters__btn--clear t-eyebrow">Limpar filtros</a>
+      {% endif %}
+    </div>
+  </form>
 
   {% if match_data %}
     <div class="match-history-grid">
@@ -232,9 +258,15 @@
 
   {% else %}
     <div class="empty-state" style="padding: var(--space-7) 0;">
-      <p class="t-eyebrow empty-state__title">// Sem partidas X1 cadastradas</p>
-      <p class="t-body-sm empty-state__desc">Registre partidas para ver o histórico aqui.</p>
-      <a href="{% url 'cadastrar_partida_x1' %}" class="btn-outline t-eyebrow">Cadastrar Partida X1</a>
+      {% if is_filtered %}
+        <p class="t-eyebrow empty-state__title">// Nenhuma partida corresponde aos filtros</p>
+        <p class="t-body-sm empty-state__desc">Tente ajustar os filtros ou limpe-os para ver todas as partidas.</p>
+        <a href="{% url 'home_x1' %}#heading-historico-x1" class="btn-outline t-eyebrow">Limpar filtros</a>
+      {% else %}
+        <p class="t-eyebrow empty-state__title">// Sem partidas X1 cadastradas</p>
+        <p class="t-body-sm empty-state__desc">Registre partidas para ver o histórico aqui.</p>
+        <a href="{% url 'cadastrar_partida_x1' %}" class="btn-outline t-eyebrow">Cadastrar Partida X1</a>
+      {% endif %}
     </div>
   {% endif %}
 
