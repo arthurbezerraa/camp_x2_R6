@@ -204,35 +204,53 @@
   <hr class="divider-stencil" style="margin-bottom: var(--space-4);" aria-hidden="true">
 
   <form method="get" action="{% url 'home' %}#heading-historico" class="match-filters" aria-label="Filtros de partidas">
-    <div class="match-filters__field">
-      <label class="t-eyebrow match-filters__label" for="filter-dupla">Dupla</label>
-      <select name="dupla" id="filter-dupla" class="match-filters__select">
-        <option value="">— Todas —</option>
-        {% for d in duos_filter %}
-          <option value="{{ d.id }}" {% if filter_dupla == d.id|stringformat:'s' %}selected{% endif %}>{{ d.nome }}</option>
-        {% endfor %}
-      </select>
+
+    <div class="match-filters__head">
+      <p class="t-eyebrow match-filters__label-eyebrow">// Filtros</p>
+      {% if is_filtered %}
+        <span class="t-mono match-filters__active">● Ativo</span>
+      {% endif %}
     </div>
 
-    <div class="match-filters__field">
-      <label class="t-eyebrow match-filters__label" for="filter-jogador">Jogador</label>
-      <select name="jogador" id="filter-jogador" class="match-filters__select">
-        <option value="">— Todos —</option>
-        {% for p in players_filter %}
-          <option value="{{ p.id }}" {% if filter_jogador == p.id|stringformat:'s' %}selected{% endif %}>{{ p.nome }}</option>
-        {% endfor %}
-      </select>
-    </div>
+    <div class="match-filters__row">
+      <div class="match-filters__field">
+        <label class="t-eyebrow match-filters__field-label" for="filter-dupla">Dupla</label>
+        <select name="dupla" id="filter-dupla" class="match-filters__select {% if filter_dupla %}is-active{% endif %}">
+          <option value="">— Todas —</option>
+          {% for d in duos_filter %}
+            <option value="{{ d.id }}" {% if filter_dupla == d.id|stringformat:'s' %}selected{% endif %}>{{ d.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-    <label class="match-filters__check" for="filter-ot">
-      <input type="checkbox" name="ot" id="filter-ot" value="1" {% if filter_ot %}checked{% endif %}>
-      <span class="t-eyebrow">Apenas com OT</span>
-    </label>
+      <div class="match-filters__field">
+        <label class="t-eyebrow match-filters__field-label" for="filter-jogador">Jogador</label>
+        <select name="jogador" id="filter-jogador" class="match-filters__select {% if filter_jogador %}is-active{% endif %}">
+          <option value="">— Todos —</option>
+          {% for p in players_filter %}
+            <option value="{{ p.id }}" {% if filter_jogador == p.id|stringformat:'s' %}selected{% endif %}>{{ p.nome }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="match-filters__field">
+        <span class="t-eyebrow match-filters__field-label">Prorrogação</span>
+        <label class="match-filters__ot" for="filter-ot">
+          <input type="checkbox" class="match-filters__ot-input" name="ot" id="filter-ot" value="1" {% if filter_ot %}checked{% endif %}>
+          <span class="match-filters__ot-track" aria-hidden="true"></span>
+          <span class="match-filters__ot-text">Apenas OT</span>
+        </label>
+      </div>
+    </div>
 
     <div class="match-filters__actions">
-      <button type="submit" class="match-filters__btn match-filters__btn--apply t-eyebrow">Filtrar</button>
+      <button type="submit" class="match-filters__apply">
+        <span>Aplicar filtros</span>
+        <span class="match-filters__apply-arrow" aria-hidden="true">→</span>
+      </button>
+      <span class="match-filters__spacer" aria-hidden="true"></span>
       {% if is_filtered %}
-        <a href="{% url 'home' %}#heading-historico" class="match-filters__btn match-filters__btn--clear t-eyebrow">Limpar filtros</a>
+        <a href="{% url 'home' %}#heading-historico" class="match-filters__clear">Limpar filtros</a>
       {% endif %}
     </div>
   </form>
